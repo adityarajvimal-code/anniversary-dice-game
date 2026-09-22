@@ -4,625 +4,284 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Work Anniversary Dice Roll 🎲</title>
-  
-  <!-- Fonts & Libraries -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <!-- Canvas Confetti Library for victory celebrations -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
   <style>
-    :root {
-      --wood-dark: #2a1608;
-      --wood-light: #522e15;
-      --wood-accent: #78431e;
-      --primary-green: #22c55e;
-      --primary-green-hover: #16a34a;
-      --text-dark: #1e293b;
-      --card-bg: rgba(255, 255, 255, 0.92);
-      --card-border: rgba(255, 255, 255, 0.6);
-      --shadow-lg: 0 20px 30px -10px rgba(0, 0, 0, 0.5);
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Inter', system-ui, -apple-system, sans-serif; 
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      user-select: none;
-    }
-
-    /* Wooden Tabletop Background */
+    
+    /* Top-down wooden tabletop aesthetic */
     body {
       width: 100vw;
       height: 100vh;
       overflow: hidden;
-      background: 
-        radial-gradient(circle at center, rgba(120, 67, 30, 0.4) 0%, rgba(20, 10, 4, 0.8) 100%),
-        repeating-linear-gradient(
-          0deg,
-          #3b1e0a 0px,
-          #3b1e0a 2px,
-          #4d290e 2px,
-          #4d290e 40px,
-          #341a08 40px,
-          #341a08 42px,
-          #44230b 42px,
-          #44230b 80px
-        );
+      background: radial-gradient(circle, #8a5a36 0%, #3d230d 100%);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
       position: relative;
-      color: var(--text-dark);
     }
 
-    /* Ambient wood grain effect overlay */
-    body::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at 50% 50%, transparent 20%, rgba(0,0,0,0.6) 100%);
-      pointer-events: none;
-    }
-
-    /* Header Title Bar */
-    header {
-      position: relative;
-      z-index: 10;
-      margin-top: 20px;
-      text-align: center;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(8px);
-      padding: 12px 28px;
-      border-radius: 50px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-    }
-
-    header h1 {
-      color: #f8fafc;
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    }
-
-    /* Main Container with 3 Panels */
-    .app-viewport {
-      position: relative;
-      z-index: 10;
-      width: 100%;
-      max-width: 1300px;
-      flex: 1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 30px;
-    }
-
-    /* Common Card Styling for Panels */
-    .glass-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 22px;
-      box-shadow: var(--shadow-lg);
-      width: 280px;
-      transition: all 0.3s ease;
-    }
-
-    /* Left Side: Roll History */
+    /* Top Left Roll History Panel */
     #history-panel {
-      display: flex;
-      flex-direction: column;
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      padding: 18px 24px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      min-width: 220px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      z-index: 10;
     }
-
-    .panel-header {
-      display: flex;
+    #history-panel h3 { 
+      font-size: 16px; 
+      margin-bottom: 10px; 
+      color: #2c1810; 
+      display: flex; 
       justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #e2e8f0;
-      padding-bottom: 12px;
-      margin-bottom: 14px;
+    }
+    #history-list { 
+      list-style: none; 
+      font-size: 14px; 
+      color: #4a3525; 
+    }
+    #history-list li { 
+      margin: 6px 0; 
+      font-weight: 600; 
+      animation: fadeIn 0.3s ease-in-out; 
     }
 
-    .panel-title {
+    /* Top Right Prize Legend Panel */
+    #prize-legend {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      padding: 18px 24px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      max-width: 280px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      z-index: 10;
+    }
+    #prize-legend h3 {
       font-size: 16px;
-      font-weight: 800;
-      color: #0f172a;
+      margin-bottom: 10px;
+      color: #2c1810;
+      border-bottom: 2px solid #e2d8ce;
+      padding-bottom: 6px;
+    }
+    .legend-list {
+      list-style: none;
+      font-size: 13px;
+      color: #333;
+    }
+    .legend-list li {
+      margin: 6px 0;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-
-    .badge {
-      background: #e2e8f0;
-      color: #334155;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 20px;
-    }
-
-    #history-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      min-height: 220px;
-    }
-
-    .history-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #f8fafc;
-      padding: 10px 14px;
-      border-radius: 12px;
-      border: 1px solid #e2e8f0;
-      font-weight: 700;
-      font-size: 14px;
-      color: #334155;
-      animation: slideIn 0.3s ease-out;
-    }
-
-    .history-item .dice-num {
-      background: #2563eb;
+    .legend-badge {
+      background: #2c1810;
       color: white;
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      display: flex;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
+      font-size: 11px;
+      flex-shrink: 0;
     }
 
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-15px); }
-      to { opacity: 1; transform: translateX(0); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Right Side: Prize Directory */
-    #prize-panel {
-      width: 320px;
-    }
-
-    .prize-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .prize-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 8px 10px;
-      border-radius: 10px;
-      background: #f8fafc;
-      border: 1px solid #f1f5f9;
-      transition: transform 0.2s;
-    }
-
-    .prize-item:hover {
-      transform: translateX(-4px);
-      background: #ffffff;
-      border-color: #cbd5e1;
-    }
-
-    .prize-num {
-      background: #0f172a;
-      color: white;
-      min-width: 26px;
-      height: 26px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 13px;
-    }
-
-    .prize-desc {
-      font-size: 13px;
-      font-weight: 600;
-      color: #334155;
-      line-height: 1.3;
-    }
-
-    /* Center Stage: 3D Dice Area */
+    /* Center Table Area for 3D Dice */
     .table-center {
       flex: 1;
-      height: 100%;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      perspective: 1200px;
-      position: relative;
+      perspective: 1000px;
     }
 
-    /* Felt Mat area beneath dice */
-    .felt-mat {
-      position: absolute;
-      width: 320px;
-      height: 320px;
-      background: radial-gradient(circle, #15803d 0%, #14532d 100%);
-      border-radius: 50%;
-      border: 8px solid #854d0e;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 30px rgba(0,0,0,0.5);
-      transform: rotateX(60deg);
-      z-index: 1;
-    }
-
-    .dice-container {
-      width: 120px;
-      height: 120px;
-      position: relative;
-      transform-style: preserve-3d;
-      z-index: 2;
-    }
-
-    /* Dynamic Dice Styling */
+    /* 3D Dice styling with 5-second smooth transition */
     .dice {
-      width: 100%;
-      height: 100%;
-      position: absolute;
+      width: 110px;
+      height: 110px;
+      position: relative;
       transform-style: preserve-3d;
-      transform: rotateX(20deg) rotateY(20deg);
+      transition: transform 5s cubic-bezier(0.25, 1, 0.5, 1);
     }
-
     .face {
       position: absolute;
-      width: 120px;
-      height: 120px;
+      width: 110px;
+      height: 110px;
       background: #ffffff;
-      background: radial-gradient(circle at 30% 30%, #ffffff 0%, #e2e8f0 100%);
-      border: 2px solid #cbd5e1;
-      border-radius: 22px;
-      box-shadow: inset 0 0 15px rgba(0,0,0,0.15);
-      display: grid;
-      grid-template: repeat(3, 1fr) / repeat(3, 1fr);
-      padding: 14px;
-      box-sizing: border-box;
-    }
-
-    /* Cube Face Rotations */
-    .front  { transform: rotateY(0deg) translateZ(60px); }
-    .back   { transform: rotateY(180deg) translateZ(60px); }
-    .right  { transform: rotateY(90deg) translateZ(60px); }
-    .left   { transform: rotateY(-90deg) translateZ(60px); }
-    .top    { transform: rotateX(90deg) translateZ(60px); }
-    .bottom { transform: rotateX(-90deg) translateZ(60px); }
-
-    /* Dice Pip Dots */
-    .pip {
-      background: #0f172a;
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      align-self: center;
-      justify-self: center;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
-    }
-
-    /* Red color for face 1 pip for traditional look */
-    .front .pip {
-      background: #dc2626;
-      width: 24px;
-      height: 24px;
-    }
-
-    /* Bottom Control Section */
-    .controls {
-      position: relative;
-      z-index: 10;
-      margin-bottom: 30px;
-      text-align: center;
+      border: 3px solid #e2d8ce;
+      border-radius: 20px;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      gap: 12px;
-    }
-
-    /* Rolling Status Indicator */
-    #roll-status {
-      color: #f8fafc;
-      font-size: 15px;
-      font-weight: 700;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-      height: 22px;
-    }
-
-    .roll-btn {
-      background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-hover) 100%);
-      color: white;
-      font-size: 18px;
+      font-size: 38px;
       font-weight: 800;
-      padding: 18px 48px;
+      color: #2c1810;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.08);
+    }
+
+    /* Cube face rotations */
+    .front  { transform: rotateY(0deg) translateZ(55px); }
+    .back   { transform: rotateY(180deg) translateZ(55px); }
+    .right  { transform: rotateY(90deg) translateZ(55px); }
+    .left   { transform: rotateY(-90deg) translateZ(55px); }
+    .top    { transform: rotateX(90deg) translateZ(55px); }
+    .bottom { transform: rotateX(-90deg) translateZ(55px); }
+
+    /* Bottom Control Bar */
+    .controls {
+      margin-bottom: 48px;
+      text-align: center;
+      z-index: 10;
+    }
+    .roll-btn {
+      background: #27ae60;
+      color: white;
+      font-size: 20px;
+      font-weight: 700;
+      padding: 16px 42px;
       border: none;
       border-radius: 50px;
       cursor: pointer;
-      box-shadow: 0 10px 25px rgba(34, 197, 94, 0.4), inset 0 2px 2px rgba(255,255,255,0.3);
-      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      letter-spacing: 0.5px;
+      box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
+      transition: all 0.2s ease;
+    }
+    .roll-btn:hover { 
+      background: #219653; 
+      transform: translateY(-2px); 
+      box-shadow: 0 12px 24px rgba(39, 174, 96, 0.5); 
+    }
+    .roll-btn:disabled { 
+      background: #828282; 
+      cursor: not-allowed; 
+      transform: none; 
+      box-shadow: none; 
     }
 
-    .roll-btn:hover:not(:disabled) {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 14px 30px rgba(34, 197, 94, 0.5);
-    }
-
-    .roll-btn:active:not(:disabled) {
-      transform: translateY(1px);
-    }
-
-    .roll-btn:disabled {
-      background: linear-gradient(135deg, #64748b 0%, #475569 100%);
-      cursor: not-allowed;
-      box-shadow: none;
-      opacity: 0.8;
-    }
-
-    /* Modal Victory Screen */
-    .modal-overlay {
+    /* Result Modal Overlay */
+    .modal {
+      display: none;
       position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(8px);
-      z-index: 100;
-      display: flex;
-      justify-content: center;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(6px);
+      justify-content: center; 
       align-items: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
+      z-index: 100;
     }
-
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .modal-card {
+    .modal-content {
       background: white;
-      border-radius: 28px;
       padding: 40px;
+      border-radius: 24px;
       text-align: center;
-      max-width: 460px;
-      width: 90%;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      transform: scale(0.8);
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      max-width: 440px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .modal-overlay.active .modal-card {
-      transform: scale(1);
+    @keyframes popUp {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
-    .modal-badge {
-      display: inline-block;
-      background: #dcfce7;
-      color: #15803d;
-      font-size: 13px;
-      font-weight: 800;
-      padding: 6px 16px;
-      border-radius: 20px;
-      margin-bottom: 16px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+    .modal-content h2 { 
+      color: #27ae60; 
+      font-size: 28px; 
+      margin-bottom: 12px; 
     }
-
-    .modal-card h2 {
-      color: #0f172a;
-      font-size: 28px;
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
-
-    .modal-card p {
-      color: #475569;
-      font-size: 16px;
-      line-height: 1.5;
-      margin-bottom: 24px;
-    }
-
-    .prize-box {
-      background: #f8fafc;
-      border: 2px dashed #cbd5e1;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 28px;
-    }
-
-    .prize-box-title {
-      font-size: 13px;
-      color: #64748b;
-      font-weight: 700;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-
-    .prize-box-value {
-      font-size: 22px;
-      font-weight: 800;
-      color: #16a34a;
-    }
-
-    /* Responsive adjustment for tablet/mobile */
-    @media (max-width: 1024px) {
-      body {
-        overflow-y: auto;
-        height: auto;
-        min-height: 100vh;
-      }
-      .app-viewport {
-        flex-direction: column;
-        gap: 20px;
-        padding: 20px;
-      }
-      .glass-card {
-        width: 100%;
-        max-width: 500px;
-      }
-      .table-center {
-        min-height: 320px;
-        margin: 20px 0;
-      }
+    .modal-content p { 
+      margin: 20px 0; 
+      font-size: 19px; 
+      color: #333; 
+      line-height: 1.5; 
     }
   </style>
 </head>
 <body>
 
-  <!-- Top App Header -->
-  <header>
-    <h1>🎲 Founder's Work Anniversary Celebration</h1>
-  </header>
-
-  <!-- Main Viewport -->
-  <div class="app-viewport">
-    
-    <!-- Left Side: Roll History Panel -->
-    <div class="glass-card" id="history-panel">
-      <div class="panel-header">
-        <span class="panel-title">📜 Roll History</span>
-        <span class="badge"><span id="roll-count">0</span> / 5 Rolls</span>
-      </div>
-      <ul id="history-list">
-        <!-- History items dynamically inserted here -->
-      </ul>
-    </div>
-
-    <!-- Center Stage: 3D Tabletop & Dice -->
-    <div class="table-center">
-      <div class="felt-mat"></div>
-      <div class="dice-container">
-        <div class="dice" id="dice">
-          <!-- Face 1 -->
-          <div class="face front">
-            <div></div><div></div><div></div>
-            <div></div><div class="pip"></div><div></div>
-            <div></div><div></div><div></div>
-          </div>
-          <!-- Face 6 -->
-          <div class="face back">
-            <div class="pip"></div><div></div><div class="pip"></div>
-            <div class="pip"></div><div></div><div class="pip"></div>
-            <div class="pip"></div><div></div><div class="pip"></div>
-          </div>
-          <!-- Face 3 -->
-          <div class="face right">
-            <div class="pip"></div><div></div><div></div>
-            <div></div><div class="pip"></div><div></div>
-            <div></div><div></div><div class="pip"></div>
-          </div>
-          <!-- Face 4 -->
-          <div class="face left">
-            <div class="pip"></div><div></div><div class="pip"></div>
-            <div></div><div></div><div></div>
-            <div class="pip"></div><div></div><div class="pip"></div>
-          </div>
-          <!-- Face 5 -->
-          <div class="face top">
-            <div class="pip"></div><div></div><div class="pip"></div>
-            <div></div><div class="pip"></div><div></div>
-            <div class="pip"></div><div></div><div class="pip"></div>
-          </div>
-          <!-- Face 2 -->
-          <div class="face bottom">
-            <div class="pip"></div><div></div><div></div>
-            <div></div><div></div><div></div>
-            <div></div><div></div><div class="pip"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right Side: Prize Legend Panel -->
-    <div class="glass-card" id="prize-panel">
-      <div class="panel-header">
-        <span class="panel-title">🎁 Prize Directory</span>
-      </div>
-      <ul class="prize-list">
-        <li class="prize-item">
-          <span class="prize-num">1</span>
-          <span class="prize-desc">1 Day Extra Paid Leave 🏖️</span>
-        </li>
-        <li class="prize-item">
-          <span class="prize-num">2</span>
-          <span class="prize-desc">Mystery Gift / Goodie 🎁</span>
-        </li>
-        <li class="prize-item">
-          <span class="prize-num">3</span>
-          <span class="prize-desc">Hoodie 🧥</span>
-        </li>
-        <li class="prize-item">
-          <span class="prize-num">4</span>
-          <span class="prize-desc">Insulated Tumbler / Flask ☕</span>
-        </li>
-        <li class="prize-item">
-          <span class="prize-num">5</span>
-          <span class="prize-desc">2 Movie Tickets 🎟️</span>
-        </li>
-        <li class="prize-item">
-          <span class="prize-num">6</span>
-          <span class="prize-desc">Amazon Gift Card 🛍️</span>
-        </li>
-      </ul>
-    </div>
-
+  <!-- Top-Left History Panel -->
+  <div id="history-panel">
+    <h3>🎲 Roll History <span>(<span id="roll-count">0</span>/5)</span></h3>
+    <ul id="history-list"></ul>
   </div>
 
-  <!-- Bottom Roll Controls -->
+  <!-- Top-Right Prize Legend -->
+  <div id="prize-legend">
+    <h3>🎁 Prize Guide</h3>
+    <ul class="legend-list">
+      <li><span class="legend-badge">1</span> 1 Day Extra Paid Leave 🏖️</li>
+      <li><span class="legend-badge">2</span> Mystery Gift / Goodie 🎁</li>
+      <li><span class="legend-badge">3</span> Custom Hoodie 🧥</li>
+      <li><span class="legend-badge">4</span> Tumbler / Flask ☕</li>
+      <li><span class="legend-badge">5</span> 2 Movie Tickets 🎟️</li>
+      <li><span class="legend-badge">6</span> Shopping Gift Card 🛍️</li>
+    </ul>
+  </div>
+
+  <!-- Table Area with 3D Dice -->
+  <div class="table-center">
+    <div class="dice" id="dice">
+      <div class="face front">1</div>
+      <div class="face back">6</div>
+      <div class="face right">3</div>
+      <div class="face left">4</div>
+      <div class="face top">5</div>
+      <div class="face bottom">2</div>
+    </div>
+  </div>
+
+  <!-- Bottom Roll Button -->
   <div class="controls">
-    <div id="roll-status">Click to roll the dice! (5s Spin)</div>
-    <button class="roll-btn" id="roll-btn" onclick="startRoll()">
-      <span>Roll Dice</span> 🎲
-    </button>
+    <button class="roll-btn" id="roll-btn" onclick="rollDice()">Roll Dice 🎲</button>
   </div>
 
-  <!-- Victory Modal Screen -->
-  <div class="modal-overlay" id="result-modal">
-    <div class="modal-card">
-      <span class="modal-badge">Work Anniversary Winner</span>
-      <h2>🎉 Congratulations!</h2>
-      <p id="winner-summary">You've completed all 5 rolls!</p>
-      
-      <div class="prize-box">
-        <div class="prize-box-title">Your Official Prize</div>
-        <div class="prize-box-value" id="winner-prize-text">Loading...</div>
-      </div>
-
-      <button class="roll-btn" style="width: 100%; justify-content: center;" onclick="location.reload()">
-        Try Again 🔄
-      </button>
+  <!-- Celebration Modal -->
+  <div class="modal" id="result-modal">
+    <div class="modal-content">
+      <h2>🎉 Happy Anniversary!</h2>
+      <p id="winner-text"></p>
+      <button class="roll-btn" onclick="location.reload()">Try Again 🔄</button>
     </div>
   </div>
 
   <script>
-    // Prize Directory Data
     const prizeMap = {
       1: "1 Day Extra Paid Leave 🏖️",
       2: "Mystery Gift / Goodie 🎁",
       3: "Hoodie 🧥",
-      4: "Insulated Stainless Steel Tumbler ☕",
+      4: "Insulated Stainless Steel Tumbler / Flask ☕",
       5: "2 Movie Tickets of Your Choice 🎟️",
       6: "Amazon / Shopping Gift Card 🛍️"
     };
 
-    // Rotation angles required to show each face on top/front
+    let rolls = [];
+    let currentRoll = 0;
+    const maxRolls = 5;
+    let rotationX = 0;
+    let rotationY = 0;
+
+    // Face rotation angles
     const faceRotations = {
       1: { x: 0, y: 0 },
       6: { x: 0, y: 180 },
@@ -632,73 +291,41 @@
       2: { x: 90, y: 0 }
     };
 
-    let rolls = [];
-    let currentRoll = 0;
-    const maxRolls = 5;
-    const ROLL_DURATION_MS = 5000; // EXACT 5 SECONDS
-
-    function startRoll() {
+    function rollDice() {
       if (currentRoll >= maxRolls) return;
 
-      const rollBtn = document.getElementById("roll-btn");
-      const statusText = document.getElementById("roll-status");
-      const dice = document.getElementById("dice");
+      const btn = document.getElementById("roll-btn");
+      btn.disabled = true;
 
-      // Disable button during spin
-      rollBtn.disabled = true;
-      statusText.innerText = "🎲 Rolling... Good luck!";
-
-      // Pick pure random face (1-6)
+      // Pure random number (1 to 6)
       const rolledNumber = Math.floor(Math.random() * 6) + 1;
       rolls.push(rolledNumber);
       currentRoll++;
 
-      // Set transition for EXACT 5 SECONDS cubic bezier spin
-      dice.style.transition = `transform ${ROLL_DURATION_MS}ms cubic-bezier(0.15, 0.85, 0.35, 1.0)`;
+      const dice = document.getElementById("dice");
+      const targetFace = faceRotations[rolledNumber];
 
-      // Calculate huge multi-spin rotations over 5 seconds
-      const targetRot = faceRotations[rolledNumber];
-      const extraTurnsX = 360 * 8; // 8 full spins on X
-      const extraTurnsY = 360 * 10; // 10 full spins on Y
+      // Cumulative rotations to ensure it rolls forward smoothly every time
+      rotationX += 360 * 5 + targetFace.x - (rotationX % 360);
+      rotationY += 360 * 5 + targetFace.y - (rotationY % 360);
+      
+      dice.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
 
-      const finalX = targetRot.x + extraTurnsX;
-      const finalY = targetRot.y + extraTurnsY;
-
-      // Trigger 3D tumble
-      dice.style.transform = `rotateX(${finalX}deg) rotateY(${finalY}deg)`;
-
-      // Countdown status updates during the 5s
-      let secondsLeft = 5;
-      const countdownInterval = setInterval(() => {
-        secondsLeft--;
-        if (secondsLeft > 0) {
-          statusText.innerText = `🎲 Rolling... (${secondsLeft}s remaining)`;
-        } else {
-          clearInterval(countdownInterval);
-        }
-      }, 1000);
-
-      // Handle roll conclusion after 5 seconds
+      // Wait 5 seconds for full rolling animation
       setTimeout(() => {
-        // Update Roll History List
+        // Append to top-left panel
         document.getElementById("roll-count").innerText = currentRoll;
         const historyList = document.getElementById("history-list");
         const li = document.createElement("li");
-        li.className = "history-item";
-        li.innerHTML = `
-          <span>Roll ${currentRoll}</span>
-          <span class="dice-num">${rolledNumber}</span>
-        `;
+        li.innerText = `Roll ${currentRoll}: Number ${rolledNumber}`;
         historyList.appendChild(li);
 
         if (currentRoll < maxRolls) {
-          rollBtn.disabled = false;
-          statusText.innerText = `Roll ${currentRoll} complete! Roll again (${maxRolls - currentRoll} left).`;
+          btn.disabled = false;
         } else {
-          statusText.innerText = "All rolls complete!";
           finishGame();
         }
-      }, ROLL_DURATION_MS);
+      }, 5000);
     }
 
     function finishGame() {
@@ -709,7 +336,6 @@
       let maxFreq = 0;
       let winningNumber = rolls[0];
 
-      // Find highest frequency roll
       for (const num in counts) {
         if (counts[num] > maxFreq) {
           maxFreq = counts[num];
@@ -717,46 +343,13 @@
         }
       }
 
-      const winningPrize = prizeMap[winningNumber];
-
-      // Populate victory modal
-      document.getElementById("winner-summary").innerHTML = 
-        `You rolled number <b>${winningNumber}</b> most frequently (${maxFreq} time${maxFreq > 1 ? 's' : ''}) across your 5 attempts!`;
+      const prize = prizeMap[winningNumber];
+      document.getElementById("winner-text").innerHTML = 
+        `You rolled number <b>${winningNumber}</b> most frequently (${maxFreq} time${maxFreq > 1 ? 's' : ''})!<br><br><b>Your Gift:</b><br><span style="color:#27ae60; font-size: 22px; font-weight: bold;">${prize}</span>`;
       
-      document.getElementById("winner-prize-text").innerText = winningPrize;
-
-      // Reveal Modal & Launch Confetti
       setTimeout(() => {
-        document.getElementById("result-modal").classList.add("active");
-        launchConfetti();
-      }, 400);
-    }
-
-    // Confetti celebration animation
-    function launchConfetti() {
-      const duration = 3 * 1000;
-      const end = Date.now() + duration;
-
-      (function frame() {
-        confetti({
-          particleCount: 4,
-          angle: 60,
-          spread: 55,
-          origin: { x: 0 },
-          colors: ['#22c55e', '#3b82f6', '#f59e0b', '#ec4899']
-        });
-        confetti({
-          particleCount: 4,
-          angle: 120,
-          spread: 55,
-          origin: { x: 1 },
-          colors: ['#22c55e', '#3b82f6', '#f59e0b', '#ec4899']
-        });
-
-        if (Date.now() < end) {
-          requestAnimationFrame(frame);
-        }
-      })();
+        document.getElementById("result-modal").style.display = "flex";
+      }, 600);
     }
   </script>
 </body>
