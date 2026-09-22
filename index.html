@@ -57,49 +57,80 @@
       animation: fadeIn 0.3s ease-in-out; 
     }
 
-    /* Top Right Prize Legend Panel */
+    /* Top Right Prize Legend Panel with Collapsible Support */
     #prize-legend {
       position: absolute;
       top: 24px;
       right: 24px;
       background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(10px);
-      padding: 18px 24px;
+      padding: 16px 20px;
       border-radius: 16px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-      max-width: 280px;
+      width: 280px;
       border: 1px solid rgba(255, 255, 255, 0.4);
       z-index: 10;
+      transition: all 0.3s ease;
+    }
+    .legend-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
     }
     #prize-legend h3 {
       font-size: 16px;
-      margin-bottom: 10px;
       color: #2c1810;
-      border-bottom: 2px solid #e2d8ce;
-      padding-bottom: 6px;
+    }
+    .toggle-btn {
+      background: #e2d8ce;
+      border: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 16px;
+      color: #2c1810;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .toggle-btn:hover {
+      background: #c8b9ab;
+    }
+    .legend-content {
+      margin-top: 10px;
+      border-top: 2px solid #e2d8ce;
+      padding-top: 8px;
+    }
+    #prize-legend.minimized .legend-content {
+      display: none;
     }
     .legend-list {
       list-style: none;
-      font-size: 13px;
+      font-size: 13.5px;
       color: #333;
     }
     .legend-list li {
-      margin: 6px 0;
+      margin: 8px 0;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      font-weight: 500;
     }
     .legend-badge {
       background: #2c1810;
       color: white;
       font-weight: bold;
       border-radius: 50%;
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
+      font-size: 12px;
       flex-shrink: 0;
     }
 
@@ -226,17 +257,22 @@
     <ul id="history-list"></ul>
   </div>
 
-  <!-- Top-Right Prize Legend -->
+  <!-- Top-Right Collapsible Prize Legend -->
   <div id="prize-legend">
-    <h3>🎁 Prize Guide</h3>
-    <ul class="legend-list">
-      <li><span class="legend-badge">1</span> 1 Day Extra Paid Leave 🏖️</li>
-      <li><span class="legend-badge">2</span> Mystery Gift / Goodie 🎁</li>
-      <li><span class="legend-badge">3</span> Custom Hoodie 🧥</li>
-      <li><span class="legend-badge">4</span> Tumbler / Flask ☕</li>
-      <li><span class="legend-badge">5</span> 2 Movie Tickets 🎟️</li>
-      <li><span class="legend-badge">6</span> Shopping Gift Card 🛍️</li>
-    </ul>
+    <div class="legend-header" onclick="toggleLegend()">
+      <h3>🎁 Prize Guide</h3>
+      <button class="toggle-btn" id="toggle-btn" title="Minimize">–</button>
+    </div>
+    <div class="legend-content">
+      <ul class="legend-list">
+        <li><span class="legend-badge">1</span> 1 Day Extra Paid Leave 🏖️</li>
+        <li><span class="legend-badge">2</span> Mystery Gift Box 🎁</li>
+        <li><span class="legend-badge">3</span> Hoodie 🧥</li>
+        <li><span class="legend-badge">4</span> Insulated Tumbler ☕</li>
+        <li><span class="legend-badge">5</span> 2 Movie Tickets 🎟️</li>
+        <li><span class="legend-badge">6</span> Shopping Gift Card 🛍️</li>
+      </ul>
+    </div>
   </div>
 
   <!-- Table Area with 3D Dice -->
@@ -268,10 +304,10 @@
   <script>
     const prizeMap = {
       1: "1 Day Extra Paid Leave 🏖️",
-      2: "Mystery Gift / Goodie 🎁",
+      2: "Mystery Gift Box 🎁",
       3: "Hoodie 🧥",
-      4: "Insulated Stainless Steel Tumbler / Flask ☕",
-      5: "2 Movie Tickets of Your Choice 🎟️",
+      4: "Insulated Tumbler ☕",
+      5: "2 Movie Tickets 🎟️",
       6: "Amazon / Shopping Gift Card 🛍️"
     };
 
@@ -290,6 +326,15 @@
       5: { x: -90, y: 0 },
       2: { x: 90, y: 0 }
     };
+
+    // Toggle minimize/expand prize legend
+    function toggleLegend() {
+      const panel = document.getElementById("prize-legend");
+      const btn = document.getElementById("toggle-btn");
+      panel.classList.toggle("minimized");
+      btn.innerText = panel.classList.contains("minimized") ? "+" : "–";
+      btn.title = panel.classList.contains("minimized") ? "Expand" : "Minimize";
+    }
 
     function rollDice() {
       if (currentRoll >= maxRolls) return;
